@@ -6,6 +6,7 @@ para que TÚ decidas y participes a mano.
 import json
 import os
 import re
+import html
 import datetime
 import yaml
 
@@ -123,8 +124,8 @@ def main():
     # 4) Nota técnica: si TODO salió vacío por errores, avisar del fallo.
     nota = None
     if errores and not a_enviar:
-        nota = "⚠️ <b>Aviso técnico:</b> el bot tuvo problemas hoy:\n• " + \
-               "\n• ".join(errores)
+        detalle = "\n• ".join(html.escape(e) for e in errores)
+        nota = "⚠️ <b>Aviso técnico:</b> el bot tuvo problemas hoy:\n• " + detalle
 
     # 5) Avisar (resumen diario o mensajes sueltos) y recordar los enviados.
     if modo_resumen:
