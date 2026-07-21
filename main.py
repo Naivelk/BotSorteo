@@ -5,6 +5,7 @@ para que TÚ decidas y participes a mano.
 """
 import json
 import os
+import re
 import datetime
 import yaml
 
@@ -48,14 +49,27 @@ def guardar_vistos(vistos):
         json.dump(sorted(vistos), f, ensure_ascii=False, indent=2)
 
 
+def _clave_titulo(titulo):
+    """Normaliza un título para detectar el mismo sorteo en fuentes distintas."""
+    t = titulo.lower()
+    t = re.sub(r"[^a-z0-9áéíóúñ ]", "", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t[:60]
+
+
 def main():
     cargar_env_local()
     config = cargar_config()
     vistos = cargar_vistos()
 
-    # 1) Recolectar de todas las fuentes.
-    items = youtube_source.obtener(config) + rss_source.obtener(config)
+    # 1) Recolectar de todas las fuentes (cada una reporta sus errores).
+    yt_items, yt_err = youtube_source.obtener(config)
+    rss_items, rss_err = rss_source.obtener(config)
+    items = yt_items + rss_items
+    errores = yt_err + rss_err
     print(f"Encontrados {len(items)} elementos en total.")
+    if errores:
+        print("Errores técnicos:", errores)
 
     palabras = config.get("palabras_clave", [])
     excluir = config.get("palabras_excluir", [])
@@ -94,11 +108,27 @@ def main():
              "🔴 Sospechoso (posible estafa)": 2}
     nuevos.sort(key=lambda x: (not x["colombia"], not x["internacional"],
                                orden.get(x["etiqueta"], 3)))
-    a_enviar = nuevos[:max_envio]
 
-    # 4) Avisar (resumen diario o mensajes sueltos) y recordar los enviados.
+    # 3b) Quitar el mismo sorteo repetido entre fuentes (mismo título).
+    vistos_titulo = set()
+    unicos = []
+    for it in nuevos:
+        clave = _clave_titulo(it["titulo"])
+        if clave in vistos_titulo:
+            continue
+        vistos_titulo.add(clave)
+        unicos.append(it)
+    a_enviar = unicos[:max_envio]
+
+    # 4) Nota técnica: si TODO salió vacío por errores, avisar del fallo.
+    nota = None
+    if errores and not a_enviar:
+        nota = "⚠️ <b>Aviso técnico:</b> el bot tuvo problemas hoy:\n• " + \
+               "\n• ".join(errores)
+
+    # 5) Avisar (resumen diario o mensajes sueltos) y recordar los enviados.
     if modo_resumen:
-        telegram_notify.enviar_resumen(a_enviar)
+        telegram_notify.enviar_resumen(a_enviar, nota=nota)
     else:
         telegram_notify.enviar(a_enviar)
     for it in a_enviar:

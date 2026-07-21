@@ -38,3 +38,12 @@ jobs:
           git add state/seen.json
           git commit -m "Actualizar sorteos vistos" || echo "Sin cambios"
           git push
+
+      # Si algo falla (crash, dependencias, etc.), avisar por Telegram.
+      - name: Avisar si el bot falló
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d text="🚨 El bot de sorteos falló hoy. Revisa la pestaña Actions en GitHub para ver qué pasó." \
+            > /dev/null

@@ -1,11 +1,26 @@
-"""Envía los sorteos nuevos a tu Telegram (con imagen si la hay)."""
+"""Envía los sorteos nuevos a tu Telegram (resumen por secciones o con imagen)."""
 import os
 import html
 import requests
 
+# Secciones del resumen, en orden de prioridad.
+SECCIONES = [
+    ("colombia", "🇨🇴 <b>De / para Colombia</b>"),
+    ("internacional", "🌎 <b>Internacionales</b>"),
+    ("otros", "🌐 <b>Otros</b>"),
+]
+
 
 def _escapar(t):
     return html.escape(t or "")
+
+
+def _bucket(it):
+    if it.get("colombia"):
+        return "colombia"
+    if it.get("internacional"):
+        return "internacional"
+    return "otros"
 
 
 def _texto(it):
@@ -22,22 +37,14 @@ def _texto(it):
 
 
 def _bloque_resumen(it, n):
-    """Un sorteo, en formato compacto para la lista del resumen.
-
-    El título es un enlace clicable (así se oculta la URL larga y fea)."""
+    """Un sorteo en formato compacto; el título es un enlace clicable."""
     emoji = it["etiqueta"].split()[0]              # 🟢 / 🟡 / 🔴
-    if it.get("colombia"):
-        globo = "🇨🇴 "
-    elif it.get("internacional"):
-        globo = "🌎 "
-    else:
-        globo = ""
     url = _escapar(it["url"])
     fuente = _escapar(it["fuente"])
     if it.get("autor") and it["autor"] != it["fuente"]:
         fuente += " · " + _escapar(it["autor"])
     return (
-        f"{n}. {emoji} {globo}<a href=\"{url}\"><b>{_escapar(it['titulo'])}</b></a>\n"
+        f"{n}. {emoji} <a href=\"{url}\"><b>{_escapar(it['titulo'])}</b></a>\n"
         f"   <i>{fuente}</i>"
     )
 
@@ -50,11 +57,25 @@ def _enviar_texto(base, chat_id, texto):
         }, timeout=20)
         r.raise_for_status()
     except Exception as e:
-        print(f"[Telegram] Error enviando resumen: {e}")
+        print(f"[Telegram] Error enviando mensaje: {e}")
 
 
-def enviar_resumen(items):
-    """Manda UN resumen (o varios trozos si es largo) con todos los sorteos."""
+def _enviar_en_trozos(base, chat_id, partes):
+    """Une las partes y las manda en mensajes de <4000 chars (límite Telegram)."""
+    trozo = ""
+    for p in partes:
+        add = ("\n\n" if trozo else "") + p
+        if len(trozo) + len(add) > 3900:
+            _enviar_texto(base, chat_id, trozo)
+            trozo = p
+        else:
+            trozo += add
+    if trozo.strip():
+        _enviar_texto(base, chat_id, trozo)
+
+
+def enviar_resumen(items, nota=None):
+    """Manda el resumen del día, agrupado por secciones. `nota` = aviso técnico."""
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     if not token or not chat_id:
@@ -62,36 +83,36 @@ def enviar_resumen(items):
         return
     base = f"https://api.telegram.org/bot{token}"
 
+    if nota:                       # aviso de que algo se rompió
+        _enviar_texto(base, chat_id, nota)
+
     if not items:
-        _enviar_texto(base, chat_id, "🎁 <b>Sorteos de hoy</b>\n\nHoy no hubo "
-                      "sorteos nuevos. Mañana reviso otra vez. 👌")
+        if not nota:
+            _enviar_texto(base, chat_id, "🎁 <b>Sorteos de hoy</b>\n\nHoy no "
+                          "hubo sorteos nuevos. Mañana reviso otra vez. 👌")
         return
 
-    co = sum(1 for it in items if it.get("colombia"))
-    intl = sum(1 for it in items if it.get("internacional") and not it.get("colombia"))
-    extras = []
-    if co:
-        extras.append(f"{co} de Colombia 🇨🇴")
-    if intl:
-        extras.append(f"{intl} internacionales 🌎")
-    encabezado = (f"🎁 <b>Sorteos de hoy</b> — {len(items)} nuevos"
-                  + (f" ({', '.join(extras)})" if extras else "")
-                  + "\n")
+    # Agrupar por sección.
+    grupos = {"colombia": [], "internacional": [], "otros": []}
+    for it in items:
+        grupos[_bucket(it)].append(it)
 
-    # Armar la lista partiendo en mensajes de <4000 caracteres (límite Telegram).
-    trozo = encabezado
-    for i, it in enumerate(items, 1):
-        bloque = "\n" + _bloque_resumen(it, i) + "\n"
-        if len(trozo) + len(bloque) > 3900:
-            _enviar_texto(base, chat_id, trozo)
-            trozo = ""
-        trozo += bloque
-    if trozo.strip():
-        _enviar_texto(base, chat_id, trozo)
+    partes = [f"🎁 <b>Sorteos de hoy</b> — {len(items)} nuevos"]
+    n = 1
+    for clave, titulo_sec in SECCIONES:
+        grupo = grupos[clave]
+        if not grupo:
+            continue
+        partes.append(f"{titulo_sec}  ({len(grupo)})")
+        for it in grupo:
+            partes.append(_bloque_resumen(it, n))
+            n += 1
+
+    _enviar_en_trozos(base, chat_id, partes)
 
 
 def enviar(items):
-    """Manda un mensaje a Telegram por cada sorteo nuevo."""
+    """Manda un mensaje suelto por cada sorteo (modo con imagen)."""
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     if not token or not chat_id:
@@ -106,8 +127,6 @@ def enviar(items):
         mensaje = _texto(it)
         imagen = it.get("imagen")
         enviado = False
-
-        # 1) Si hay imagen, intentamos mandarla como foto con pie de texto.
         if imagen:
             try:
                 r = requests.post(f"{base}/sendPhoto", data={
@@ -118,8 +137,6 @@ def enviar(items):
                 enviado = True
             except Exception as e:
                 print(f"[Telegram] Foto falló, mando como texto: {e}")
-
-        # 2) Si no hay imagen (o falló), mandamos texto con vista previa.
         if not enviado:
             try:
                 r = requests.post(f"{base}/sendMessage", data={

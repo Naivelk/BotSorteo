@@ -20,13 +20,16 @@ def _imagen(entry):
 
 
 def obtener(config):
-    """Devuelve una lista de posibles sorteos encontrados en los feeds RSS."""
+    """Devuelve (items, errores) encontrados en los feeds RSS."""
     resultados = []
-    for url in config.get("feeds_rss", []):
+    errores = []
+    feeds = config.get("feeds_rss", [])
+    caidos = 0
+    for url in feeds:
         try:
             feed = feedparser.parse(url)
             if feed.bozo and not feed.entries:
-                print(f"[RSS] Feed sin datos o con error: {url}")
+                caidos += 1
                 continue
             for e in feed.entries:
                 enlace = e.get("link", "")
@@ -43,5 +46,10 @@ def obtener(config):
                     "imagen": _imagen(e),
                 })
         except Exception as ex:
+            caidos += 1
             print(f"[RSS] Error leyendo {url}: {ex}")
-    return resultados
+
+    # Solo avisar si se cayeron TODOS (o casi todos) los feeds.
+    if feeds and caidos >= len(feeds):
+        errores.append(f"RSS: fallaron los {caidos} feeds (¿Google News caído?)")
+    return resultados, errores

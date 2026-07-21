@@ -107,6 +107,9 @@ youtube_busquedas:
   - sorteo colombia
   - giveaway colombia
   - sorteo para colombianos
+  # orientados a Instagram / Facebook (indirecto: videos que anuncian el sorteo)
+  - sorteo instagram
+  - sorteo facebook
 
 # (Opcional) Canales concretos que quieras vigilar.
 # Pega el ID del canal (empieza por UC...). Déjalo vacío si no quieres.
@@ -127,6 +130,9 @@ feeds_rss:
   - "https://news.google.com/rss/search?q=international+giveaway+enter&hl=en-US&gl=US&ceid=US:en"
   - "https://news.google.com/rss/search?q=sorteo+colombia&hl=es-419&gl=CO&ceid=CO:es"
   - "https://news.google.com/rss/search?q=sorteo+gratis+colombia&hl=es-419&gl=CO&ceid=CO:es"
+  # Instagram / Facebook (indirecto, vía noticias que mencionan el sorteo)
+  - "https://news.google.com/rss/search?q=sorteo+instagram&hl=es-419&gl=CO&ceid=CO:es"
+  - "https://news.google.com/rss/search?q=giveaway+instagram&hl=en-US&gl=US&ceid=US:en"
 
 # --------- FILTRO ANTI-ESTAFA ---------
 # Frases que suben la "sospecha" de un sorteo (típicas de estafa).
