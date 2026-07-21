@@ -29,12 +29,15 @@ youtube_canales: []
 # Solo videos publicados en las últimas X horas (para no repetir viejos).
 youtube_horas_atras: 48
 
-# --------- WEBS DE SORTEOS (RSS) ---------
-# Feeds RSS de sitios de sorteos. Son más estables que el scraping.
-# Puedes añadir/quitar los que quieras. Si un feed falla, se ignora solo.
+# --------- WEBS / NOTICIAS DE SORTEOS (RSS) ---------
+# Usamos Google News RSS: es estable, gratis y busca por palabra.
+# Cada URL es una búsqueda distinta. Puedes añadir o cambiar las palabras
+# (lo que va después de q= , separando con + los espacios).
 feeds_rss:
-  - https://www.sorteosyganadores.com/feed/
-  - https://sortea2.com/feed/
+  - "https://news.google.com/rss/search?q=sorteo+gratis&hl=es-419&gl=US&ceid=US:es"
+  - "https://news.google.com/rss/search?q=concurso+premio&hl=es-419&gl=US&ceid=US:es"
+  - "https://news.google.com/rss/search?q=sorteo+instagram+gana&hl=es-419&gl=US&ceid=US:es"
+  - "https://news.google.com/rss/search?q=giveaway+free+enter&hl=en-US&gl=US&ceid=US:en"
 
 # --------- FILTRO ANTI-ESTAFA ---------
 # Frases que suben la "sospecha" de un sorteo (típicas de estafa).
