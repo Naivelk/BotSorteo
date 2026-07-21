@@ -14,7 +14,6 @@ import scam_filter
 import telegram_notify
 
 ARCHIVO_VISTOS = "state/seen.json"
-MAX_POR_CORRIDA = 15  # no mandar más de N avisos de golpe
 
 
 def cargar_env_local():
@@ -60,9 +59,13 @@ def main():
 
     palabras = config.get("palabras_clave", [])
     excluir = config.get("palabras_excluir", [])
+    internac = config.get("senales_internacional", [])
     senales = config.get("senales_estafa", [])
     max_dias = config.get("max_dias_antiguedad", 4)
-    limite_fecha = datetime.datetime.utcnow() - datetime.timedelta(days=max_dias)
+    modo_resumen = config.get("modo_resumen", True)
+    max_envio = config.get("max_por_resumen", 40)
+    limite_fecha = (datetime.datetime.now(datetime.timezone.utc)
+                    .replace(tzinfo=None) - datetime.timedelta(days=max_dias))
 
     # 2) Filtrar: relevantes + no vistos + recientes + sin ruido; evaluar riesgo.
     nuevos = []
@@ -79,19 +82,23 @@ def main():
         nivel, motivos = scam_filter.evaluar(it, senales)
         it["etiqueta"] = scam_filter.ETIQUETA[nivel]
         it["motivos"] = motivos
+        it["internacional"] = scam_filter.es_internacional(it, internac)
         nuevos.append(it)
 
     print(f"Sorteos nuevos relevantes: {len(nuevos)}")
 
-    # 3) Ordenar (primero los que parecen legítimos) y limitar.
+    # 3) Ordenar: primero los internacionales 🌎, luego por confianza.
     orden = {"🟢 Parece legítimo": 0, "🟡 Revísalo con cuidado": 1,
              "🔴 Sospechoso (posible estafa)": 2}
-    nuevos.sort(key=lambda x: orden.get(x["etiqueta"], 3))
-    a_enviar = nuevos[:MAX_POR_CORRIDA]
+    nuevos.sort(key=lambda x: (not x["internacional"],
+                               orden.get(x["etiqueta"], 3)))
+    a_enviar = nuevos[:max_envio]
 
-    # 4) Avisar y recordar como vistos SOLO los que sí se enviaron
-    #    (los sobrantes se enviarán en la siguiente corrida).
-    telegram_notify.enviar(a_enviar)
+    # 4) Avisar (resumen diario o mensajes sueltos) y recordar los enviados.
+    if modo_resumen:
+        telegram_notify.enviar_resumen(a_enviar)
+    else:
+        telegram_notify.enviar(a_enviar)
     for it in a_enviar:
         vistos.add(it["id"])
     guardar_vistos(vistos)

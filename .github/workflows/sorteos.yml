@@ -2,8 +2,8 @@ name: Buscar sorteos
 
 on:
   schedule:
-    # Corre cada hora (en punto, horario UTC). Ajusta si quieres.
-    - cron: "0 * * * *"
+    # Corre una vez al día: 13:00 UTC = 8:00 a.m. en Colombia. Ajusta si quieres.
+    - cron: "0 13 * * *"
   workflow_dispatch:   # Botón para correrlo manualmente cuando quieras.
 
 permissions:

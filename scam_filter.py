@@ -12,6 +12,12 @@ def esta_excluido(item, palabras_excluir):
     return any(p.lower() in texto for p in palabras_excluir)
 
 
+# ¿Parece un sorteo internacional / abierto a Latinoamérica?
+def es_internacional(item, senales_internacional):
+    texto = f"{item['titulo']} {item['descripcion']}".lower()
+    return any(p.lower() in texto for p in senales_internacional)
+
+
 def evaluar(item, senales_estafa):
     """Devuelve (nivel, motivos). nivel: 'ok' | 'duda' | 'riesgo'."""
     texto = f"{item['titulo']} {item['descripcion']} {item['url']}".lower()

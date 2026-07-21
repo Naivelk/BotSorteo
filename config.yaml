@@ -22,25 +22,79 @@ palabras_excluir:
   - dazn
   - eliminatorias
   - champions
-  - lotería
-  - loteria
-  - gordo de navidad
-  - powerball
-  - visa americana
-  - green card
   - resultados del sorteo
   - números ganadores
   - numeros ganadores
+  # --- loterías (puro resultado de números, no son giveaways) ---
+  - lotería
+  - loteria
+  - loto
+  - lotto
+  - baloto
+  - melate
+  - powerball
+  - mega millions
+  - chance
+  - quiniela
+  - tris
+  - kino
+  - sinuano
+  - astro
+  - dorado
+  - chontico
+  - paisita
+  - culona
+  - motilón
+  - motilon
+  - caribeña
+  - caribena
+  - pijao
+  - cafeterito
+  - gordo de navidad
+  # --- migración / estafas típicas ---
+  - visa americana
+  - green card
+  - sorteo de visas
+
+# Señales de que un sorteo es INTERNACIONAL / abierto a Latinoamérica.
+# Los que tengan alguna de estas se marcan con 🌎 y van primero en el resumen.
+senales_internacional:
+  - internacional
+  - international
+  - worldwide
+  - todo el mundo
+  - todos los paises
+  - todos los países
+  - envío internacional
+  - envio internacional
+  - ships worldwide
+  - open worldwide
+  - latinoamérica
+  - latinoamerica
+  - latam
+  - colombia
+  - hispanoamérica
+  - hispanoamerica
 
 # Solo avisar de sorteos publicados en los últimos X días (descarta lo viejo).
 max_dias_antiguedad: 4
 
+# --------- CÓMO TE AVISA ---------
+# modo_resumen: true  -> un solo mensaje al día con la lista (recomendado)
+# modo_resumen: false -> un mensaje suelto por cada sorteo (con imagen)
+modo_resumen: true
+max_por_resumen: 40   # máximo de sorteos en el resumen del día
+
 # --------- YOUTUBE ---------
 # Búsquedas que se hacen en YouTube cada vez que corre.
+# Enfocadas en sorteos internacionales / abiertos a Latinoamérica.
 youtube_busquedas:
-  - sorteo gratis
-  - giveaway 2026
-  - concurso premio
+  - sorteo internacional
+  - sorteo envío internacional
+  - giveaway worldwide
+  - international giveaway
+  - sorteo latinoamérica
+  - giveaway ships worldwide
 
 # (Opcional) Canales concretos que quieras vigilar.
 # Pega el ID del canal (empieza por UC...). Déjalo vacío si no quieres.
@@ -55,10 +109,10 @@ youtube_horas_atras: 48
 # Cada URL es una búsqueda distinta. Puedes añadir o cambiar las palabras
 # (lo que va después de q= , separando con + los espacios).
 feeds_rss:
-  - "https://news.google.com/rss/search?q=sorteo+gratis&hl=es-419&gl=US&ceid=US:es"
-  - "https://news.google.com/rss/search?q=concurso+premio&hl=es-419&gl=US&ceid=US:es"
-  - "https://news.google.com/rss/search?q=sorteo+instagram+gana&hl=es-419&gl=US&ceid=US:es"
-  - "https://news.google.com/rss/search?q=giveaway+free+enter&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=sorteo+internacional&hl=es-419&gl=US&ceid=US:es"
+  - "https://news.google.com/rss/search?q=sorteo+env%C3%ADo+internacional&hl=es-419&gl=US&ceid=US:es"
+  - "https://news.google.com/rss/search?q=giveaway+worldwide&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=international+giveaway+enter&hl=en-US&gl=US&ceid=US:en"
 
 # --------- FILTRO ANTI-ESTAFA ---------
 # Frases que suben la "sospecha" de un sorteo (típicas de estafa).
