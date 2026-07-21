@@ -72,9 +72,16 @@ senales_internacional:
   - latinoamérica
   - latinoamerica
   - latam
-  - colombia
   - hispanoamérica
   - hispanoamerica
+
+# Señales de que un sorteo es DE / PARA COLOMBIA. Se marcan con 🇨🇴 y van primero.
+senales_colombia:
+  - colombia
+  - colombiano
+  - colombiana
+  - colombianos
+  - colombianas
 
 # Solo avisar de sorteos publicados en los últimos X días (descarta lo viejo).
 max_dias_antiguedad: 4
@@ -89,12 +96,17 @@ max_por_resumen: 40   # máximo de sorteos en el resumen del día
 # Búsquedas que se hacen en YouTube cada vez que corre.
 # Enfocadas en sorteos internacionales / abiertos a Latinoamérica.
 youtube_busquedas:
+  # internacionales / abiertos a Latinoamérica
   - sorteo internacional
   - sorteo envío internacional
   - giveaway worldwide
   - international giveaway
   - sorteo latinoamérica
   - giveaway ships worldwide
+  # enfocados en Colombia
+  - sorteo colombia
+  - giveaway colombia
+  - sorteo para colombianos
 
 # (Opcional) Canales concretos que quieras vigilar.
 # Pega el ID del canal (empieza por UC...). Déjalo vacío si no quieres.
@@ -113,6 +125,8 @@ feeds_rss:
   - "https://news.google.com/rss/search?q=sorteo+env%C3%ADo+internacional&hl=es-419&gl=US&ceid=US:es"
   - "https://news.google.com/rss/search?q=giveaway+worldwide&hl=en-US&gl=US&ceid=US:en"
   - "https://news.google.com/rss/search?q=international+giveaway+enter&hl=en-US&gl=US&ceid=US:en"
+  - "https://news.google.com/rss/search?q=sorteo+colombia&hl=es-419&gl=CO&ceid=CO:es"
+  - "https://news.google.com/rss/search?q=sorteo+gratis+colombia&hl=es-419&gl=CO&ceid=CO:es"
 
 # --------- FILTRO ANTI-ESTAFA ---------
 # Frases que suben la "sospecha" de un sorteo (típicas de estafa).

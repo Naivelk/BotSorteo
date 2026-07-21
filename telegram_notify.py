@@ -26,7 +26,12 @@ def _bloque_resumen(it, n):
 
     El título es un enlace clicable (así se oculta la URL larga y fea)."""
     emoji = it["etiqueta"].split()[0]              # 🟢 / 🟡 / 🔴
-    globo = "🌎 " if it.get("internacional") else ""
+    if it.get("colombia"):
+        globo = "🇨🇴 "
+    elif it.get("internacional"):
+        globo = "🌎 "
+    else:
+        globo = ""
     url = _escapar(it["url"])
     fuente = _escapar(it["fuente"])
     if it.get("autor") and it["autor"] != it["fuente"]:
@@ -62,9 +67,15 @@ def enviar_resumen(items):
                       "sorteos nuevos. Mañana reviso otra vez. 👌")
         return
 
-    intl = sum(1 for it in items if it.get("internacional"))
+    co = sum(1 for it in items if it.get("colombia"))
+    intl = sum(1 for it in items if it.get("internacional") and not it.get("colombia"))
+    extras = []
+    if co:
+        extras.append(f"{co} de Colombia 🇨🇴")
+    if intl:
+        extras.append(f"{intl} internacionales 🌎")
     encabezado = (f"🎁 <b>Sorteos de hoy</b> — {len(items)} nuevos"
-                  + (f" ({intl} internacionales 🌎)" if intl else "")
+                  + (f" ({', '.join(extras)})" if extras else "")
                   + "\n")
 
     # Armar la lista partiendo en mensajes de <4000 caracteres (límite Telegram).

@@ -18,6 +18,12 @@ def es_internacional(item, senales_internacional):
     return any(p.lower() in texto for p in senales_internacional)
 
 
+# ¿Parece un sorteo de / para Colombia?
+def es_colombia(item, senales_colombia):
+    texto = f"{item['titulo']} {item['descripcion']}".lower()
+    return any(p.lower() in texto for p in senales_colombia)
+
+
 def evaluar(item, senales_estafa):
     """Devuelve (nivel, motivos). nivel: 'ok' | 'duda' | 'riesgo'."""
     texto = f"{item['titulo']} {item['descripcion']} {item['url']}".lower()

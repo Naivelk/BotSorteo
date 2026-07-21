@@ -60,6 +60,7 @@ def main():
     palabras = config.get("palabras_clave", [])
     excluir = config.get("palabras_excluir", [])
     internac = config.get("senales_internacional", [])
+    colombia = config.get("senales_colombia", [])
     senales = config.get("senales_estafa", [])
     max_dias = config.get("max_dias_antiguedad", 4)
     modo_resumen = config.get("modo_resumen", True)
@@ -82,15 +83,16 @@ def main():
         nivel, motivos = scam_filter.evaluar(it, senales)
         it["etiqueta"] = scam_filter.ETIQUETA[nivel]
         it["motivos"] = motivos
+        it["colombia"] = scam_filter.es_colombia(it, colombia)
         it["internacional"] = scam_filter.es_internacional(it, internac)
         nuevos.append(it)
 
     print(f"Sorteos nuevos relevantes: {len(nuevos)}")
 
-    # 3) Ordenar: primero los internacionales 🌎, luego por confianza.
+    # 3) Ordenar: primero Colombia 🇨🇴, luego internacionales 🌎, luego confianza.
     orden = {"🟢 Parece legítimo": 0, "🟡 Revísalo con cuidado": 1,
              "🔴 Sospechoso (posible estafa)": 2}
-    nuevos.sort(key=lambda x: (not x["internacional"],
+    nuevos.sort(key=lambda x: (not x["colombia"], not x["internacional"],
                                orden.get(x["etiqueta"], 3)))
     a_enviar = nuevos[:max_envio]
 
