@@ -1,0 +1,59 @@
+# =========================================================
+#  CONFIGURACIÓN DE TU BUSCADOR DE SORTEOS
+#  Edita esta parte cuando quieras. No toques el código.
+# =========================================================
+
+# Palabras que debe buscar (en YouTube y en los feeds).
+# Un sorteo cuenta si el título o la descripción contiene ALGUNA de estas.
+palabras_clave:
+  - sorteo
+  - giveaway
+  - regalo
+  - gana
+  - concurso
+  - premio
+  - rifa
+
+# --------- YOUTUBE ---------
+# Búsquedas que se hacen en YouTube cada vez que corre.
+youtube_busquedas:
+  - sorteo gratis
+  - giveaway 2026
+  - concurso premio
+
+# (Opcional) Canales concretos que quieras vigilar.
+# Pega el ID del canal (empieza por UC...). Déjalo vacío si no quieres.
+youtube_canales: []
+  # - UCxxxxxxxxxxxxxxxxxxxxxx
+
+# Solo videos publicados en las últimas X horas (para no repetir viejos).
+youtube_horas_atras: 48
+
+# --------- WEBS DE SORTEOS (RSS) ---------
+# Feeds RSS de sitios de sorteos. Son más estables que el scraping.
+# Puedes añadir/quitar los que quieras. Si un feed falla, se ignora solo.
+feeds_rss:
+  - https://www.sorteosyganadores.com/feed/
+  - https://sortea2.com/feed/
+
+# --------- FILTRO ANTI-ESTAFA ---------
+# Frases que suben la "sospecha" de un sorteo (típicas de estafa).
+senales_estafa:
+  - paga el envío
+  - paga el envio
+  - costo de envío
+  - verifica tu cuenta
+  - verificación de pago
+  - ingresa tu tarjeta
+  - número de tarjeta
+  - datos bancarios
+  - cvv
+  - haz clic aquí para reclamar
+  - reclama tu premio ahora
+  - solo por hoy
+  - felicidades has sido seleccionado
+  - envía tus datos por whatsapp
+  - transferencia
+  - bitcoin
+  - cripto
+  - inversión garantizada

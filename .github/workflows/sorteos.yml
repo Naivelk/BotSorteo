@@ -1,0 +1,40 @@
+name: Buscar sorteos
+
+on:
+  schedule:
+    # Corre cada 6 horas (horario UTC). Ajusta si quieres.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:   # Botón para correrlo manualmente cuando quieras.
+
+permissions:
+  contents: write      # Para guardar la lista de "ya vistos".
+
+jobs:
+  buscar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el proyecto
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Buscar sorteos y avisar
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python main.py
+
+      - name: Guardar lo ya visto
+        run: |
+          git config user.name "sorteos-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add state/seen.json
+          git commit -m "Actualizar sorteos vistos" || echo "Sin cambios"
+          git push
