@@ -14,6 +14,27 @@ palabras_clave:
   - premio
   - rifa
 
+# Palabras que DESCARTAN un resultado (aunque tenga una palabra clave).
+# Sirve para quitar ruido: noticias del "sorteo del Mundial", lotería, etc.
+# Añade las que veas que te llegan y no quieres.
+palabras_excluir:
+  - mundial
+  - dazn
+  - eliminatorias
+  - champions
+  - lotería
+  - loteria
+  - gordo de navidad
+  - powerball
+  - visa americana
+  - green card
+  - resultados del sorteo
+  - números ganadores
+  - numeros ganadores
+
+# Solo avisar de sorteos publicados en los últimos X días (descarta lo viejo).
+max_dias_antiguedad: 4
+
 # --------- YOUTUBE ---------
 # Búsquedas que se hacen en YouTube cada vez que corre.
 youtube_busquedas:

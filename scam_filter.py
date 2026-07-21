@@ -6,6 +6,12 @@ def es_relevante(item, palabras_clave):
     return any(p.lower() in texto for p in palabras_clave)
 
 
+# ¿Contiene alguna palabra a excluir? (ruido: Mundial, lotería, etc.)
+def esta_excluido(item, palabras_excluir):
+    texto = f"{item['titulo']} {item['descripcion']}".lower()
+    return any(p.lower() in texto for p in palabras_excluir)
+
+
 def evaluar(item, senales_estafa):
     """Devuelve (nivel, motivos). nivel: 'ok' | 'duda' | 'riesgo'."""
     texto = f"{item['titulo']} {item['descripcion']} {item['url']}".lower()

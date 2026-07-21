@@ -5,6 +5,7 @@ para que TÚ decidas y participes a mano.
 """
 import json
 import os
+import datetime
 import yaml
 
 import youtube_source
@@ -58,15 +59,23 @@ def main():
     print(f"Encontrados {len(items)} elementos en total.")
 
     palabras = config.get("palabras_clave", [])
+    excluir = config.get("palabras_excluir", [])
     senales = config.get("senales_estafa", [])
+    max_dias = config.get("max_dias_antiguedad", 4)
+    limite_fecha = datetime.datetime.utcnow() - datetime.timedelta(days=max_dias)
 
-    # 2) Filtrar: relevantes + no vistos, y evaluar riesgo.
+    # 2) Filtrar: relevantes + no vistos + recientes + sin ruido; evaluar riesgo.
     nuevos = []
     for it in items:
         if it["id"] in vistos:
             continue
         if not scam_filter.es_relevante(it, palabras):
             continue
+        if scam_filter.esta_excluido(it, excluir):
+            continue
+        fecha = it.get("fecha_dt")
+        if fecha and fecha < limite_fecha:
+            continue  # demasiado viejo
         nivel, motivos = scam_filter.evaluar(it, senales)
         it["etiqueta"] = scam_filter.ETIQUETA[nivel]
         it["motivos"] = motivos
