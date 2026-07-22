@@ -74,6 +74,7 @@ def main():
 
     palabras = config.get("palabras_clave", [])
     excluir = config.get("palabras_excluir", [])
+    excluir_tit = config.get("palabras_excluir_titulo", [])
     internac = config.get("senales_internacional", [])
     colombia = config.get("senales_colombia", [])
     senales = config.get("senales_estafa", [])
@@ -90,7 +91,7 @@ def main():
             continue
         if not scam_filter.es_relevante(it, palabras):
             continue
-        if scam_filter.esta_excluido(it, excluir):
+        if scam_filter.esta_excluido(it, excluir, excluir_tit):
             continue
         fecha = it.get("fecha_dt")
         if fecha and fecha < limite_fecha:

@@ -18,14 +18,22 @@ palabras_clave:
 # Sirve para quitar ruido: noticias del "sorteo del Mundial", lotería, etc.
 # Añade las que veas que te llegan y no quieres.
 palabras_excluir:
+  # --- deportes: ahí "sorteo" = sorteo de partidos, no un regalo ---
   - mundial
   - dazn
   - eliminatorias
+  - eliminatoria
   - champions
-  - resultados del sorteo
-  - números ganadores
-  - numeros ganadores
-  # --- loterías (puro resultado de números, no son giveaways) ---
+  - supercopa
+  - endesa
+  - libertadores
+  - sudamericana
+  - copa américa
+  - copa america
+  - fase de grupos
+  - octavos de final
+  - calendario de partidos
+  # --- loterías y azar (solo publican números, no son giveaways) ---
   - lotería
   - loteria
   - loto
@@ -34,13 +42,15 @@ palabras_excluir:
   - melate
   - powerball
   - mega millions
-  - chance
   - quiniela
-  - tris
+  - sorteo tris
   - kino
   - sinuano
-  - astro
-  - dorado
+  - astro luna
+  - astro sol
+  - dorado mañana
+  - dorado tarde
+  - dorado noche
   - chontico
   - paisita
   - culona
@@ -50,11 +60,56 @@ palabras_excluir:
   - caribena
   - pijao
   - cafeterito
+  - fantástica
+  - fantastica
   - gordo de navidad
-  # --- migración / estafas típicas ---
+  - premio mayor
+  - balota
+  - balotas
+  - número ganador
+  - numero ganador
+  - números ganadores
+  - numeros ganadores
+  - juega en el departamento
+  # --- migración / trámites ---
   - visa americana
   - green card
   - sorteo de visas
+  # --- restringidos a un país que no te sirve ---
+  - us only
+  - u.s. only
+  - usa only
+  - united states only
+  - uk only
+  - solo españa
+  - solo espana
+  - solo méxico
+  - solo mexico
+  - solo argentina
+  - solo chile
+
+# Palabras que descartan SOLO si aparecen en el TÍTULO.
+# Son sorteos que YA se hicieron (anuncios de ganadores/resultados).
+# Se miran solo en el título para no descartar un sorteo bueno cuya
+# descripción diga "anunciaré los ganadores el viernes".
+palabras_excluir_titulo:
+  - ganador del sorteo
+  - ganadora del sorteo
+  - ganadores del sorteo
+  - ganadoras del sorteo
+  - anuncio de ganadores
+  - lista de ganadores
+  - winners
+  - winner announcement
+  - we have a winner
+  - i won
+  - resultado del
+  - resultados del
+  - tras el sorteo
+  - sorteo cerrado
+  - sorteo finalizado
+  - ya finalizó
+  - ya finalizo
 
 # Señales de que un sorteo es INTERNACIONAL / abierto a Latinoamérica.
 # Los que tengan alguna de estas se marcan con 🌎 y van primero en el resumen.
@@ -128,8 +183,8 @@ feeds_rss:
   - "https://news.google.com/rss/search?q=sorteo+env%C3%ADo+internacional&hl=es-419&gl=US&ceid=US:es"
   - "https://news.google.com/rss/search?q=giveaway+worldwide&hl=en-US&gl=US&ceid=US:en"
   - "https://news.google.com/rss/search?q=international+giveaway+enter&hl=en-US&gl=US&ceid=US:en"
-  - "https://news.google.com/rss/search?q=sorteo+colombia&hl=es-419&gl=CO&ceid=CO:es"
-  - "https://news.google.com/rss/search?q=sorteo+gratis+colombia&hl=es-419&gl=CO&ceid=CO:es"
+  - "https://news.google.com/rss/search?q=sorteo+colombia+-loteria+-baloto+-chance+-resultados+-astro&hl=es-419&gl=CO&ceid=CO:es"
+  - "https://news.google.com/rss/search?q=sorteo+gratis+colombia+-loteria+-resultados&hl=es-419&gl=CO&ceid=CO:es"
   # Instagram / Facebook (indirecto, vía noticias que mencionan el sorteo)
   - "https://news.google.com/rss/search?q=sorteo+instagram&hl=es-419&gl=CO&ceid=CO:es"
   - "https://news.google.com/rss/search?q=giveaway+instagram&hl=en-US&gl=US&ceid=US:en"
